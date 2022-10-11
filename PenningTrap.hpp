@@ -4,6 +4,7 @@
 #include <armadillo>
 #include <math.h>
 #include "Particle.hpp"
+#include <iostream>
 
 class PenningTrap{
 
@@ -13,8 +14,8 @@ class PenningTrap{
         double B0;
         double V0;
         double d;
-        //arma::vec<Particle> particles;
-        arma::vec particles;
+        std::vector<Particle> particles;
+        //arma::vec particles;
         double k_e = 1.38935333*pow(10,5);
 
         PenningTrap(){};
