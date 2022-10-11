@@ -3,17 +3,18 @@
 
 #include <armadillo>
 #include <math.h>
-#include "class_particle.hpp"
+#include "Particle.hpp"
 
 class PenningTrap{
 
     private:
 
     public:
-        double B0_in;
-        double V0_in;
-        double d_in;
-        std::vector<Particle> particles;
+        double B0;
+        double V0;
+        double d;
+        //arma::vec<Particle> particles;
+        arma::vec particles;
         double k_e = 1.38935333*pow(10,5);
 
         PenningTrap(){};
