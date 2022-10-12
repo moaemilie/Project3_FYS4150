@@ -57,9 +57,9 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in){
 
     // The total force on particle_i from the external fields
     arma::vec PenningTrap::total_force_external(int i){
-    double F_x = particles[i].q*(-V0*particles[i].r(0))/pow(d,2)+particles[i].q*particles[i].v(1)*B0;
-    double F_y = particles[i].q*(-V0*particles[i].r(1))/pow(d,2)+particles[i].q*particles[i].v(0)*B0; 
-    double F_z = particles[i].q*(-2*V0*particles[i].r(2))/pow(d,2);
+    double F_x = (particles[i].q*(V0*particles[i].r(0))/(pow(d,2)))+particles[i].q*particles[i].v(1)*B0;
+    double F_y = (particles[i].q*(V0*particles[i].r(1))/(pow(d,2)))-particles[i].q*particles[i].v(0)*B0; 
+    double F_z = particles[i].q*(-2*V0*particles[i].r(2))/(pow(d,2));
 
     arma::vec F_em = arma::vec(3);
     F_em(0) = F_x;
@@ -85,8 +85,12 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in){
 
 
     // The total force on particle_i from both external fields and other particles
-    //arma::vec PenningTrap::total_force(int i);
+    arma::vec PenningTrap::total_force(int i){
+      arma::vec F_tot = arma::vec(3).zeros();
+      F_tot = total_force_particles(i)+total_force_external(i);
 
+      return F_tot;
+    }
     // Evolve the system one time step (dt) using Runge-Kutta 4th order
     //void PenningTrap::evolve_RK4(double dt);
 

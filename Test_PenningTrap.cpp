@@ -60,27 +60,38 @@ int main(){
 
     //Testing function for total external force
     arma::vec F_tot_ex = trap1.total_force_external(0);
-    assert(floor(F_tot_ex(0))==183);
-    assert(floor(F_tot_ex(1))==77);
-    assert(floor(F_tot_ex(2))==-20);
+     assert(floor(F_tot_ex(0))==202);
+     assert(floor(F_tot_ex(1))==-78);
+     assert(floor(F_tot_ex(2))==-20);
 
     // Testing function for total force on particle_i from the other particles
-    
-    //assert(floor(F_tot_ij(0))==17366);
-    //assert(floor(F_tot_ij(1))==277867);
-    //assert(floor(F_tot_ij(2))==17366);
-
     arma::vec v3 = arma::vec("1. 2. 1.");
     arma::vec r3 = arma::vec("5. 5. 5.");
-    
+
     Particle p3 = Particle(5., 5., r3, v3);
     trap1.add_particle(p3);
 
-    arma::vec F_tot_ij = trap1.total_force_particles(0); 
-    assert(floor(F_tot_ij(0))==28220);
-    //assert(floor(F_tot_ij(1))==329330);
-    assert(floor(F_tot_ij(2))==28220);
-    //std::cout << floor(F_tot_ij);
+    arma::vec F_ij1 = trap1.force_particle(0,1);
+    arma::vec F_ij2 = trap1.force_particle(0,2);
+    arma::vec F_tot_ij_test = F_ij1 + F_ij2;
+
+    arma::vec F_tot_ij = trap1.total_force_particles(0);
+    std::cout << F_tot_ij_test; 
+ 
+    assert((F_tot_ij(0))==F_tot_ij_test(0));
+    assert((F_tot_ij(1))==F_tot_ij_test(1));
+    assert((F_tot_ij(2))==F_tot_ij_test(2));
+
+    // Testing the function for total force on particle
+    arma::vec F_ex = trap1.total_force_external(0);
+    arma::vec F_int = trap1.total_force_particles(0);
+    arma::vec F_tot_test = F_ex + F_int;
+
+    arma::vec F_tot = trap1.total_force(0);
+    std::cout << F_tot_test; 
+    assert(F_tot(0)==F_tot_test(0));
+    assert(F_tot(1)==F_tot_test(1));
+    assert(F_tot(2)==F_tot_test(2));
 
     return 0;
 }
