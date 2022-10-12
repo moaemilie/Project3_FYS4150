@@ -76,7 +76,6 @@ int main(){
     arma::vec F_tot_ij_test = F_ij1 + F_ij2;
 
     arma::vec F_tot_ij = trap1.total_force_particles(0);
-    std::cout << F_tot_ij_test; 
  
     assert((F_tot_ij(0))==F_tot_ij_test(0));
     assert((F_tot_ij(1))==F_tot_ij_test(1));
@@ -88,10 +87,21 @@ int main(){
     arma::vec F_tot_test = F_ex + F_int;
 
     arma::vec F_tot = trap1.total_force(0);
-    std::cout << F_tot_test; 
+    
     assert(F_tot(0)==F_tot_test(0));
     assert(F_tot(1)==F_tot_test(1));
     assert(F_tot(2)==F_tot_test(2));
+
+    // Test forward Euler
+
+    //std::cout << trap1.particles[0].v; 
+
+    //trap1.evolve_forward_Euler(0.1);
+
+    //std::cout << trap1.particles[0].v; 
+
+    trap1.evolve_RK4(0.1);
+    std::cout << trap1.particles[0].v; 
 
     return 0;
 }
