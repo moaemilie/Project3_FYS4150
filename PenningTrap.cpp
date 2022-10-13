@@ -41,15 +41,15 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in){
 
   // Force on particle_i from particle_j
     arma::vec PenningTrap::force_particle(int i, int j){
-      double E_x_ij = (k_e*particles[j].q*(particles[i].r(0))-particles[j].r(0))/(pow(abs(particles[i].r(0)-particles[j].r(0)),3));
-      double E_y_ij = (k_e*particles[j].q*(particles[i].r(1))-particles[j].r(1))/(pow(abs(particles[i].r(1)-particles[j].r(1)),3));
-      double E_z_ij = (k_e*particles[j].q*(particles[i].r(2))-particles[j].r(2))/(pow(abs(particles[i].r(2)-particles[j].r(2)),3));
 
+      double E_x_ij = k_e*particles[j].q*((particles[i].r(0))-(particles[j].r(0))) / ((pow((abs(particles[i].r(0)-particles[j].r(0))),3)));      
+      double E_y_ij = (k_e*particles[j].q*((particles[i].r(1))-(particles[j].r(1)))/(pow((abs(particles[i].r(1)-particles[j].r(1))),3)));
+      double E_z_ij = (k_e*particles[j].q*((particles[i].r(2))-(particles[j].r(2)))/(pow((abs(particles[i].r(2)-particles[j].r(2))),3)));
 
       arma::vec E_force = arma::vec(3);
-      E_force(0) = E_x_ij*particles[i].q;
-      E_force(1) = E_y_ij*particles[i].q;
-      E_force(2) = E_z_ij*particles[i].q;
+      E_force(0) = E_x_ij * particles[i].q;
+      E_force(1) = E_y_ij * particles[i].q;
+      E_force(2) = E_z_ij * particles[i].q;
 
       return E_force;
     };  
@@ -91,7 +91,8 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in){
     // The total force on particle_i from both external fields and other particles
     arma::vec PenningTrap::total_force(int i){
       arma::vec F_tot = arma::vec(3).zeros();
-      F_tot = total_force_particles(i)+total_force_external(i);
+      F_tot = total_force_particles(i)+total_force_external(i); // Force with interaction
+      // F_tot = total_force_external(i); // Force without interaction
 
       return F_tot;
     }
@@ -159,15 +160,12 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in){
     void PenningTrap::evolve_forward_Euler(double dt){
 
       for(int i = 0; i < particles.size(); i++){
-        //arma::vec F_e = total_force(i);
-        arma::vec v_next = particles[i].v + ((total_force(i)/particles[i].m)*dt);
+        arma::vec v_next = particles[i].v + (total_force(i)/particles[i].m)*1*dt;
         arma::vec r_next = particles[i].r + (particles[i].v*dt);
 
         particles[i].v = v_next;
         particles[i].r = r_next;
+
       } 
- 
-      //double r_x = A1*cos(-w1*t-theta)+A2*cos(-w2*t-theta)
-      //double r_y = A1*sin(-w1*t-theta)+A2*sin(-w2*t-theta)
 
     }

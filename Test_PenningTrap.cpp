@@ -96,14 +96,16 @@ int main(){
 
     //std::cout << trap1.particles[0].v; 
 
-    //trap1.evolve_forward_Euler(0.1);
 
+    trap1.evolve_forward_Euler(0.1);
+
+    
     //std::cout << trap1.particles[0].v; 
 
     // Test Runge Kutta fourth order
 
-    trap1.evolve_RK4(0.1);
-    std::cout << trap1.particles[0].v; 
+    //trap1.evolve_RK4(0.1);
+    //std::cout << trap1.particles[0].r; 
 
     return 0;
 }
