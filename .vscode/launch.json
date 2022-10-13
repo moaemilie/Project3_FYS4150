@@ -1,0 +1,13 @@
+{
+    "configurations": [
+    {
+        "type": "lldb",
+        "request": "launch",
+        "name": "Amirs Debugger",
+        "program": "${workspaceFolder}/${fileBasenameNoExtension}.exe",
+        "args": [],
+        "cwd": "${workspaceFolder}",
+        "terminal": "console"
+    }
+    ]
+}

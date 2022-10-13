@@ -41,33 +41,36 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in){
 
   // Force on particle_i from particle_j
     arma::vec PenningTrap::force_particle(int i, int j){
-    double E_x_ij = (k_e*particles[j].q*(particles[i].r(0))-particles[j].r(0))/(pow(abs(particles[i].r(0)-particles[j].r(0)),3));
-    double E_y_ij = (k_e*particles[j].q*(particles[i].r(1))-particles[j].r(1))/(pow(abs(particles[i].r(1)-particles[j].r(1)),3));
-    double E_z_ij = (k_e*particles[j].q*(particles[i].r(2))-particles[j].r(2))/(pow(abs(particles[i].r(2)-particles[j].r(2)),3));
+      double E_x_ij = (k_e*particles[j].q*(particles[i].r(0))-particles[j].r(0))/(pow(abs(particles[i].r(0)-particles[j].r(0)),3));
+      double E_y_ij = (k_e*particles[j].q*(particles[i].r(1))-particles[j].r(1))/(pow(abs(particles[i].r(1)-particles[j].r(1)),3));
+      double E_z_ij = (k_e*particles[j].q*(particles[i].r(2))-particles[j].r(2))/(pow(abs(particles[i].r(2)-particles[j].r(2)),3));
 
 
-    arma::vec E_force = arma::vec(3);
-    E_force(0) = E_x_ij*particles[i].q;
-    E_force(1) = E_y_ij*particles[i].q;
-    E_force(2) = E_z_ij*particles[i].q;
+      arma::vec E_force = arma::vec(3);
+      E_force(0) = E_x_ij*particles[i].q;
+      E_force(1) = E_y_ij*particles[i].q;
+      E_force(2) = E_z_ij*particles[i].q;
 
-    return E_force;
-  };  
+      return E_force;
+    };  
   
 
     // The total force on particle_i from the external fields
+
+    // Skulle kanskje bruke våre tidligere funkjsoner her? ... (!!!)
+
     arma::vec PenningTrap::total_force_external(int i){
 
-    double F_x = (particles[i].q*(V0*particles[i].r(0))/(pow(d,2)))+particles[i].q*particles[i].v(1)*B0;
-    double F_y = (particles[i].q*(V0*particles[i].r(1))/(pow(d,2)))-particles[i].q*particles[i].v(0)*B0; 
-    double F_z = particles[i].q*(-2*V0*particles[i].r(2))/(pow(d,2));
+      double F_x = (particles[i].q*(V0*particles[i].r(0))/(pow(d,2)))+particles[i].q*particles[i].v(1)*B0;
+      double F_y = (particles[i].q*(V0*particles[i].r(1))/(pow(d,2)))-particles[i].q*particles[i].v(0)*B0; 
+      double F_z = particles[i].q*(-2*V0*particles[i].r(2))/(pow(d,2));
 
-    arma::vec F_em = arma::vec(3);
-    F_em(0) = F_x;
-    F_em(1) = F_y;
-    F_em(2) = F_z;
+      arma::vec F_em = arma::vec(3);
+      F_em(0) = F_x;
+      F_em(1) = F_y;
+      F_em(2) = F_z;
 
-    return F_em;
+      return F_em;
 
     }
 
@@ -92,58 +95,62 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in){
 
       return F_tot;
     }
+
     // Evolve the system one time step (dt) using Runge-Kutta 4th order
 
     // What abou the time dependency... (!!!)
 
     void PenningTrap::evolve_RK4(double dt){
 
+      std::vector<Particle> init_part;
+      std::vector<arma::mat> K1_v;
+      std::vector<arma::mat> K1_r;
+      std::vector<arma::mat> K2_v;
+      std::vector<arma::mat> K2_r;
+      std::vector<arma::mat> K3_v;
+      std::vector<arma::mat> K3_r;
+      std::vector<arma::mat> K4_v;
+      std::vector<arma::mat> K4_r;
+      
+      // Make a copy of all the particle velocities and positions
+        for(int i = 0; i < particles.size(); i++){
+
+            init_part.push_back(particles[i]);
+
+            K1_r.push_back(dt*init_part[i].v);
+            K1_v.push_back((total_force(i)/init_part[i].m)*dt);
+
+            particles[i].r = init_part[i].r + (1./2.)*K1_r[i]; 
+            particles[i].v = init_part[i].v + (1./2.)*K1_v[i];
+          }
+
       for(int i = 0; i < particles.size(); i++){
-        arma::vec v_cop = particles[i].v;
-        arma::vec r_cop = particles[i].r;
 
-        arma::vec K1_r = dt*particles[i].v;
-        arma::vec K1_v = (total_force(i)/particles[i].m)*dt;
+          K2_r.push_back(dt*particles[i].v);
+          K2_v.push_back((total_force(i)/particles[i].m)*dt);
 
-        arma::vec r1 = particles[i].r + (1/2)*K1_r;
-        arma::vec v1 = particles[i].v + (1/2)*K1_v;
+          // Calculate r2 and v2 and updating the particle velocity and position
+          particles[i].v = init_part[i].v + (1./2.)*K2_v[i];
+          particles[i].r = init_part[i].r + (1./2.)*K2_r[i]; 
+
+      } 
+
+       for(int i = 0; i < particles.size(); i++){
+          K3_r.push_back(dt*particles[i].v);
+          K3_v.push_back((total_force(i)/particles[i].m)*dt);
+
+          // Calculate r3 and v3 and updating the particle velocity and position
+          particles[i].v = init_part[i].v + K3_v[i];
+          particles[i].r = init_part[i].r + K3_r[i];
+      }
+
+      for(int i = 0; i < particles.size(); i++){
+        K4_r.push_back(dt*particles[i].v);
+        K4_v.push_back((total_force(i)/particles[i].m)*dt);
         
-        particles[i].v = v1;
-        particles[i].r = r1;
-
-        arma::vec K2_r = dt*particles[i].v;
-        arma::vec K2_v = (total_force(i)/particles[i].m)*dt;
-
-        //std::cout << K2_v;
-
-        arma::vec r2 = particles[i].r + (1/2)*K2_r;
-        arma::vec v2 = particles[i].v + (1/2)*K2_v;
-        
-        particles[i].v = v2;
-        particles[i].r = r2;
-
-        arma::vec K3_r = dt*particles[i].v;
-        arma::vec K3_v = (total_force(i)/particles[i].m)*dt;
-
-        //std::cout << K3_v;
-
-        arma::vec r3 = particles[i].r + (1/2)*K3_r;
-        arma::vec v3 = particles[i].v + (1/2)*K3_v;
-        
-        particles[i].v = v3;
-        particles[i].r = r3;
-
-        arma::vec K4_r = dt*particles[i].v;
-        arma::vec K4_v = (total_force(i)/particles[i].m)*dt;
-        
-        std::cout << (1/6)*(K1_r + 2*K2_r + 2*K3_r + K4_r);
-        std::cout << (1/6)*(K1_r + 2*K2_r + 2*K3_r + K4_r);
-
-        arma::vec r_next = r_cop + (1/6)*(K1_r + 2*K2_r + 2*K3_r + K4_r);
-        arma::vec v_next = v_cop + (1/6)*(K1_v+2*K2_v + 2*K3_v + K4_v);
-        
-        particles[i].v = v_next;
-        particles[i].r = r_next;
+        // Uupdating the particle velocity and position
+        particles[i].v = init_part[i].v + (1./6.)*(K1_v[i] + 2*K2_v[i] + 2*K3_v[i] + K4_v[i]);
+        particles[i].r = init_part[i].r + (1./6.)*(K1_r[i] + 2*K2_r[i] + 2*K3_r[i] + K4_r[i]);
       }
 
     }
@@ -152,17 +159,15 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in){
     void PenningTrap::evolve_forward_Euler(double dt){
 
       for(int i = 0; i < particles.size(); i++){
+        //arma::vec F_e = total_force(i);
+        arma::vec v_next = particles[i].v + ((total_force(i)/particles[i].m)*dt);
+        arma::vec r_next = particles[i].r + (particles[i].v*dt);
 
-        arma::vec F_e = total_force(i);
-        arma::vec v_next = particles[i].v + (F_e/particles[i].m)*dt;
         particles[i].v = v_next;
-
-        arma::vec r_next = particles[i].v * dt + particles[i].r;
         particles[i].r = r_next;
-      }
-
+      } 
+ 
       //double r_x = A1*cos(-w1*t-theta)+A2*cos(-w2*t-theta)
       //double r_y = A1*sin(-w1*t-theta)+A2*sin(-w2*t-theta)
-
 
     }

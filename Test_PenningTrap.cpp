@@ -100,6 +100,8 @@ int main(){
 
     //std::cout << trap1.particles[0].v; 
 
+    // Test Runge Kutta fourth order
+
     trap1.evolve_RK4(0.1);
     std::cout << trap1.particles[0].v; 
 
