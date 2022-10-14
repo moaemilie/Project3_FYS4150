@@ -19,8 +19,7 @@ int main(){
 
   double m = 40.078*1.660*pow(10,-6);
   //double q = 1*pow(10,6); //1.602*pow(10,-19);
-  double q = 1; //(V0_in*4*m)/(pow(B0_in,2)*pow(d_in,2));
-  std::cout << q;
+  double q = 1; //(V0_in*4*m)/(pow(B0_in,2)*pow(d_in,2));  
 
   // Creating instsances of two particles
   Particle particle1 = Particle(q, m , r1, v1);
@@ -58,12 +57,12 @@ int main(){
 
 
 // Write the vectors to files
-  std::string filename = "Particle_x_RK4.txt";
+  std::string filename = "Test.txt";
   std::ofstream ofile;
   ofile.open(filename);
   int width = 12;
   int prec  = 4;
-
+1
   // Loop over steps
   for (int i = 0; i < part1_x.size(); i++)
   {

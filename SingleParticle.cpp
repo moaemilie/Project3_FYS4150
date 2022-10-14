@@ -5,7 +5,7 @@
 
 int main(){
   
-/*   // Defining values for the particels
+  // Defining values for the particel
   arma::vec r1 = arma::vec("20. 0. 20.");
   arma::vec v1 = arma::vec("0. 25. 0.");
 
@@ -17,16 +17,16 @@ int main(){
   double m = 40.078*1.660*pow(10,-6);
   double q = 1; 
 
-  // Creating instsances of two particles
+  // Creating instsances of a particel
   Particle particle1 = Particle(q, m , r1, v1);
 
-  // Creating penning trap
+  // Creating a penning trap
   PenningTrap trap1 = PenningTrap(B0_in, V0_in, d_in);
 
   // Adding particles to the penning trap
   trap1.add_particle(particle1);
 
-  // Running the Runge kutta function 
+  // Defining values for the different dt-s
   double n1 = 4000;
   double n2 = 8000;
   double n3 = 1600;
@@ -36,7 +36,7 @@ int main(){
   double dt = TotTime/n1;
   int steps = n1;
 
-  // Saving all the x-values for plotting
+  // Saving all the x,y,z-values for plotting
   std::vector<double> part1_x_nk;
   std::vector<double> part1_y_nk;
   std::vector<double> part1_z_nk;
@@ -65,7 +65,9 @@ int main(){
           << std::endl;
   }  
   ofile.close();
- */
+ 
+
+  //#############################################################################################
 
   // Analytical solution
 
@@ -76,33 +78,30 @@ int main(){
   double B0 = 9.65*pow(10, 1); // Rett opp
   double V0 = 2.41*pow(10, 6); // Rett opp
   double d = 500.;
-  double m = 40.078;//*1.660*pow(10,-6);
-  double q = 1;
+  double m = 40.078*1.660*pow(10,-6);
+  double q = 1 *pow(10,-6);
 
 
   double phi_minus = 0;
   double phi_plus = 0;
   double w0 = (q*B0)/(m);
   double wz2 = (2*q*V0)/(m*pow(d,2));
-  double w_plus = (w0 + sqrt(pow(w0,2)*2*wz2))/(2);
-  double w_minus = (w0 - sqrt(pow(w0,2)*2*wz2))/(2);
+  double w_plus = (w0 + (sqrt(pow(w0,2)*2*wz2)))/(2);
+  double w_minus = (w0 - (sqrt(pow(w0,2)*2*wz2)))/(2);
 
   std::vector<double> solution_x_analy;
   std::vector<double> solution_y_analy;
   std::vector<double> solution_z_analy;
-  solution_x_analy.push_back(r1(0));
-  solution_y_analy.push_back(r1(1));
-  solution_z_analy.push_back(r1(2))
 
-//Finne en måte å oppdatere v på
   for(double i = 1; i < 4000; i++){
     double t = (50./4000.)*i;
-    std::cout << t;
-    double A_plus = (v1(1)+(w_minus*solution_x_analy(i-1)))/(w_minus-w_plus);
-    double A_minus = -(v1(1)+(w_plus*olution_x_analy(i-1)))/(w_minus-w_plus);
-    double x_analy = (A_plus + cos(-w_plus*t - phi_minus)+ A_minus*cos(-w_minus*t-phi_plus));
-    double y_analy = (A_minus + sin(-w_plus*t - phi_minus)+ A_minus*sin(-w_minus*t-phi_plus));
-    double z_analy = r1(2)*cos(wz2*t);
+    double A_plus = (v1(1)+(w_minus*r1(0)))/(w_minus-w_plus);
+    double A_minus = (-v1(1)-(w_plus*r1(0)))/(w_minus-w_plus);
+    
+    double x_analy = (A_plus*cos((-w_plus*t) - phi_plus)) + (A_minus*cos((-w_minus*t)-phi_minus));
+    double y_analy = (A_plus*sin((-w_plus*t) - phi_plus)) + (A_minus*sin((-w_minus*t)-phi_minus));
+    double z_analy = (r1(2))*cos(sqrt(wz2)*t);
+
     solution_x_analy.push_back(x_analy);
     solution_y_analy.push_back(y_analy);
     solution_z_analy.push_back(z_analy);
@@ -124,6 +123,32 @@ int main(){
           << std::endl; 
   }  
   ofile.close();
+
+
+  //#############################################################################################
+
+  // Calculating the relative error
+
+  std::vector<double> Error_rel_x_nk = log((part1_x_nk - x_analy)/(part1_x_nk));
+  std::vector<double> Error_rel_y_nk = log((part1_y_nk - y_analy)/(part1__nk));
+  std::vector<double> Error_rel_z_nk = log((part1_z_nk - z_analy)/(part1_z_nk));
+
+  // Write the vectors to files
+  std::string filename = "Rel_error_n1.txt";
+  std::ofstream ofile;
+  ofile.open(filename);
+  //int width = 12;
+  //int prec  = 4;
+
+  // Loop over steps
+  for (int i = 0; i < Error_rel_x_nk.size(); i++){
+  ofile << std::setw(width) << std::setprecision(prec) << std::scientific << Error_rel_x_nk[i]
+          << std::setw(width) << std::setprecision(prec) << std::scientific << Error_rel_y_nk[i]
+          << std::setw(width) << std::setprecision(prec) << std::scientific << Error_rel_z_nk[i]
+          << std::endl; 
+  }  
+  ofile.close(); 
+
   
   return 1; 
 }

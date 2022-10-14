@@ -17,7 +17,8 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in){
 
   // External electric field at point r=(x,y,z)
   arma::vec PenningTrap::external_E_field(arma::vec r){ 
-    double E_x = (V0*r(0))/(pow(d,2));
+
+    double E_x = (V0*r(0))/(pow(d,2));  // Her virker det som at den runder av når tallene blir små... 0.00016 blir 0.0002 (ikke bra)
     double E_y = (V0*r(1))/(pow(d,2));
     double E_z = -(2*V0*r(2))/(pow(d,2));
     arma::vec E = arma::vec(3);
@@ -161,7 +162,7 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in){
   void PenningTrap::evolve_forward_Euler(double dt){
 
     for(int i = 0; i < particles.size(); i++){
-      arma::vec v_next = particles[i].v + (total_force(i)/particles[i].m)*dt;
+      arma::vec v_next = particles[i].v + ((total_force(i))/particles[i].m)*dt;
       arma::vec r_next = particles[i].r + (particles[i].v*dt);
 
       particles[i].v = v_next;
