@@ -62,10 +62,11 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in){
     // Skulle kanskje bruke våre tidligere funkjsoner her? ... (!!!)
 
     arma::vec PenningTrap::total_force_external(int i){
+      arma::vec E_field = external_E_field(particle.r);
 
-      double F_x = (particles[i].q*(V0*particles[i].r(0))/(pow(d,2)))+particles[i].q*particles[i].v(1)*B0;
-      double F_y = (particles[i].q*(V0*particles[i].r(1))/(pow(d,2)))-particles[i].q*particles[i].v(0)*B0; 
-      double F_z = particles[i].q*(-2*V0*particles[i].r(2))/(pow(d,2));
+      double F_x = (particles[i].q*E_field(0))+particles[i].q*particles[i].v(1)*B0;
+      double F_y = (particles[i].q*E_field(1))-particles[i].q*particles[i].v(0)*B0; 
+      double F_z = particles[i].q*E_field(2);
 
       arma::vec F_em = arma::vec(3);
       F_em(0) = F_x;
