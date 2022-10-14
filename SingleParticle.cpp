@@ -76,7 +76,7 @@ int main(){
   double B0 = 9.65*pow(10, 1); // Rett opp
   double V0 = 2.41*pow(10, 6); // Rett opp
   double d = 500.;
-  double m = 40.078*1.660*pow(10,-6);
+  double m = 40.078;//*1.660*pow(10,-6);
   double q = 1;
 
 
@@ -86,15 +86,20 @@ int main(){
   double wz2 = (2*q*V0)/(m*pow(d,2));
   double w_plus = (w0 + sqrt(pow(w0,2)*2*wz2))/(2);
   double w_minus = (w0 - sqrt(pow(w0,2)*2*wz2))/(2);
-  double A_plus = (v1(1)+(w_minus*r1(0)))/(w_minus-w_plus);
-  double A_minus = -(v1(1)+(w_plus*r1(0)))/(w_minus-w_plus);
+
   std::vector<double> solution_x_analy;
   std::vector<double> solution_y_analy;
   std::vector<double> solution_z_analy;
+  solution_x_analy.push_back(r1(0));
+  solution_y_analy.push_back(r1(1));
+  solution_z_analy.push_back(r1(2))
 
-  for(double i = 0; i < 4000; i++){
+//Finne en måte å oppdatere v på
+  for(double i = 1; i < 4000; i++){
     double t = (50./4000.)*i;
     std::cout << t;
+    double A_plus = (v1(1)+(w_minus*solution_x_analy(i-1)))/(w_minus-w_plus);
+    double A_minus = -(v1(1)+(w_plus*olution_x_analy(i-1)))/(w_minus-w_plus);
     double x_analy = (A_plus + cos(-w_plus*t - phi_minus)+ A_minus*cos(-w_minus*t-phi_plus));
     double y_analy = (A_minus + sin(-w_plus*t - phi_minus)+ A_minus*sin(-w_minus*t-phi_plus));
     double z_analy = r1(2)*cos(wz2*t);
