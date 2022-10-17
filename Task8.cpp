@@ -110,7 +110,7 @@ int main(){
 
   //#####################################################################################
   // Getting the x, v_x, y and v_y values for the two particles with and withount interaction
-/* 
+
   std::vector<double> part1_x;
   std::vector<double> part1_v_x;
   std::vector<double> part1_y;
@@ -129,14 +129,14 @@ int main(){
       part1_y.push_back(trap1.particles[0].r(1));
       part1_v_y.push_back(trap1.particles[0].v(1));
 
-      part1_x.push_back(trap1.particles[1].r(0));
-      part1_v_x.push_back(trap1.particles[1].v(0));
-      part1_y.push_back(trap1.particles[1].r(1));
-      part1_v_y.push_back(trap1.particles[1].v(1));
+      part2_x.push_back(trap1.particles[1].r(0));
+      part2_v_x.push_back(trap1.particles[1].v(0));
+      part2_y.push_back(trap1.particles[1].r(1));
+      part2_v_y.push_back(trap1.particles[1].v(1));
     } 
   
   // Write the vectors to files
-  std::string filename = "Particle1_RK4_NO_INTER_speed.txt";
+  std::string filename = "Particle1_RK4_INTER_speed.txt";
   std::ofstream ofile;
   ofile.open(filename);
   int width = 12;
@@ -153,7 +153,7 @@ int main(){
   ofile.close();
 
     // Write the vectors to files
-  std::string filename2 = "Particle2_RK4_NO_INTER_speed.txt";
+  std::string filename2 = "Particle2_RK4_INTER_speed.txt";
   std::ofstream ofile2;
   ofile2.open(filename2);
   // Loop over steps
@@ -165,11 +165,11 @@ int main(){
           << std::setw(width) << std::setprecision(prec) << std::scientific << part2_v_y[i]
           << std::endl;
   }  
-  ofile2.close(); */
+  ofile2.close();  
 
   //#####################################################################################
   // Getting the x, y, z values for the two particles with and withount interaction
-
+/* 
   std::vector<double> part1_x;
   std::vector<double> part1_y;
   std::vector<double> part1_z;
@@ -207,7 +207,7 @@ int main(){
           << std::setw(width) << std::setprecision(prec) << std::scientific << part2_z[i]
           << std::endl;
   }  
-  ofile.close();
+  ofile.close(); */
 
   return 1; 
 }

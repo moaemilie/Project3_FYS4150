@@ -95,8 +95,8 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in){
     // The total force on particle_i from both external fields and other particles
   arma::vec PenningTrap::total_force(int i){
     arma::vec F_tot = arma::vec(3).zeros();
-    //F_tot = total_force_particles(i)+total_force_external(i); // Force with interaction
-    F_tot = total_force_external(i); // Force without interaction
+    F_tot = total_force_particles(i)+total_force_external(i); // Force with interaction
+    //F_tot = total_force_external(i); // Force without interaction
     return F_tot;
   }
 
