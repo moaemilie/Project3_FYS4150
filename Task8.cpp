@@ -17,9 +17,8 @@ int main(){
   double V0_in = 2.41*pow(10, 6); // Rett opp
   double d_in = 500.;
 
-  double m = 40.078*1.660*pow(10,-6);
-  //double q = 1*pow(10,6); //1.602*pow(10,-19);
-  double q = 1; //(V0_in*4*m)/(pow(B0_in,2)*pow(d_in,2));  
+  double m = 40.078;
+  double q = 1; 
 
   // Creating instsances of two particles
   Particle particle1 = Particle(q, m , r1, v1);
@@ -38,8 +37,8 @@ int main(){
 
 
   // Running the Runge kutta function 
-  double TotTime = 0.000050;//*pow(10,-6);
-  double dt = 0.000001;
+  double TotTime = 50;//*pow(10,-6);
+  double dt = 0.1;
   int steps = TotTime / dt;
 
   // Saving all the z-values for plotting
@@ -57,12 +56,11 @@ int main(){
 
 
 // Write the vectors to files
-  std::string filename = "Test.txt";
+  std::string filename = "Particle_z_RK4.txt";
   std::ofstream ofile;
   ofile.open(filename);
   int width = 12;
   int prec  = 4;
-1
   // Loop over steps
   for (int i = 0; i < part1_x.size(); i++)
   {

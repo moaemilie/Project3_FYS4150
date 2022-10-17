@@ -162,7 +162,7 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in){
   void PenningTrap::evolve_forward_Euler(double dt){
 
     for(int i = 0; i < particles.size(); i++){
-      arma::vec v_next = particles[i].v + ((total_force(i))/particles[i].m)*dt;
+      arma::vec v_next = particles[i].v + ((total_force(i))/(particles[i].m))*dt;
       arma::vec r_next = particles[i].r + (particles[i].v*dt);
 
       particles[i].v = v_next;

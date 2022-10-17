@@ -14,7 +14,7 @@ int main(){
   double V0_in = 2.41*pow(10, 6); // Rett opp
   double d_in = 500.;
 
-  double m = 40.078*1.660*pow(10,-6);
+  double m = 40.078;
   double q = 1; 
 
   // Creating instsances of a particel
@@ -50,18 +50,18 @@ int main(){
     }
 
   // Write the vectors to files
-  std::string filename = "SingleParticle_n1.txt";
+  std::string filename = "SingleParticle_n1_TEST_RK4.txt";
   std::ofstream ofile;
   ofile.open(filename);
   int width = 12;
   int prec  = 4;
 
   // Loop over steps
-  for (int i = 0; i < part1_x_n1.size(); i++)
+  for (int i = 0; i < part1_x_nk.size(); i++)
   {
-  ofile << std::setw(width) << std::setprecision(prec) << std::scientific << part1_x_n1[i]
-          << std::setw(width) << std::setprecision(prec) << std::scientific << part1_y_n1[i]
-          << std::setw(width) << std::setprecision(prec) << std::scientific << part1_z_n1[i]
+  ofile << std::setw(width) << std::setprecision(prec) << std::scientific << part1_x_nk[i]
+          << std::setw(width) << std::setprecision(prec) << std::scientific << part1_y_nk[i]
+          << std::setw(width) << std::setprecision(prec) << std::scientific << part1_z_nk[i]
           << std::endl;
   }  
   ofile.close();
@@ -71,15 +71,15 @@ int main(){
 
   // Analytical solution
 
-  arma::vec r1 = arma::vec("20. 0. 20.");
-  arma::vec v1 = arma::vec("0. 25. 0.");
+  arma::vec r1_analy = arma::vec("20. 0. 20.");
+  arma::vec v1_analy = arma::vec("0. 25. 0.");
 
   // Defining values for penning trap
   double B0 = 9.65*pow(10, 1); // Rett opp
   double V0 = 2.41*pow(10, 6); // Rett opp
   double d = 500.;
-  double m = 40.078*1.660*pow(10,-6);
-  double q = 1 *pow(10,-6);
+  //double m = 40.078*1.660*pow(10,-6);
+  //double q = 1; //*pow(10,-6);
 
 
   double phi_minus = 0;
@@ -95,12 +95,12 @@ int main(){
 
   for(double i = 1; i < 4000; i++){
     double t = (50./4000.)*i;
-    double A_plus = (v1(1)+(w_minus*r1(0)))/(w_minus-w_plus);
-    double A_minus = (-v1(1)-(w_plus*r1(0)))/(w_minus-w_plus);
+    double A_plus = (v1_analy(1)+(w_minus*r1(0)))/(w_minus-w_plus);
+    double A_minus = (-v1_analy(1)-(w_plus*r1(0)))/(w_minus-w_plus);
     
     double x_analy = (A_plus*cos((-w_plus*t) - phi_plus)) + (A_minus*cos((-w_minus*t)-phi_minus));
     double y_analy = (A_plus*sin((-w_plus*t) - phi_plus)) + (A_minus*sin((-w_minus*t)-phi_minus));
-    double z_analy = (r1(2))*cos(sqrt(wz2)*t);
+    double z_analy = (r1_analy(2))*cos(sqrt(wz2)*t);
 
     solution_x_analy.push_back(x_analy);
     solution_y_analy.push_back(y_analy);
@@ -108,27 +108,27 @@ int main(){
 }
 
     // Write the vectors to files
-  std::string filename = "Analytical_SingleParticle.txt";
-  std::ofstream ofile;
-  ofile.open(filename);
-  int width = 12;
-  int prec  = 4;
+  std::string filename2 = "Analytical_SingleParticle_TEST.txt";
+  std::ofstream ofile2;
+  ofile2.open(filename2);
+  //int width = 12;
+  //int prec  = 4;
 
   // Loop over steps
   for (int i = 0; i < solution_x_analy.size(); i++)
   {
-  ofile << std::setw(width) << std::setprecision(prec) << std::scientific << solution_x_analy[i]
+  ofile2 << std::setw(width) << std::setprecision(prec) << std::scientific << solution_x_analy[i]
           << std::setw(width) << std::setprecision(prec) << std::scientific << solution_y_analy[i]
           << std::setw(width) << std::setprecision(prec) << std::scientific << solution_z_analy[i]
           << std::endl; 
   }  
-  ofile.close();
+  ofile2.close();
 
 
   //#############################################################################################
 
   // Calculating the relative error
-
+/* 
   std::vector<double> Error_rel_x_nk = log((part1_x_nk - x_analy)/(part1_x_nk));
   std::vector<double> Error_rel_y_nk = log((part1_y_nk - y_analy)/(part1__nk));
   std::vector<double> Error_rel_z_nk = log((part1_z_nk - z_analy)/(part1_z_nk));
@@ -147,7 +147,7 @@ int main(){
           << std::setw(width) << std::setprecision(prec) << std::scientific << Error_rel_z_nk[i]
           << std::endl; 
   }  
-  ofile.close(); 
+  ofile.close();  */
 
   
   return 1; 
