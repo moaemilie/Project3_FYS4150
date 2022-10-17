@@ -122,7 +122,7 @@ int main(){
 
   // Running the Runge kutta function 
   for(int t = 0; t < steps; t++){
-      trap1.evolve_RK4(dt);          //evolve_RK4;
+      trap1.evolve_RK4(dt, 1);          //evolve_RK4;
 
       part1_x.push_back(trap1.particles[0].r(0));
       part1_v_x.push_back(trap1.particles[0].v(0));
