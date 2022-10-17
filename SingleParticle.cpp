@@ -36,7 +36,7 @@ int main(){
   double dt = TotTime/n1;
   int steps = n1;
 
-  // Saving all the x,y,z-values for plotting
+/*   // Saving all the x,y,z-values for plotting
   std::vector<double> part1_x_nk;
   std::vector<double> part1_y_nk;
   std::vector<double> part1_z_nk;
@@ -63,8 +63,8 @@ int main(){
           << std::setw(width) << std::setprecision(prec) << std::scientific << part1_y_nk[i]
           << std::setw(width) << std::setprecision(prec) << std::scientific << part1_z_nk[i]
           << std::endl;
-  }  
-  ofile.close();
+  }   
+  ofile.close(); */
  
 
   //#############################################################################################
@@ -85,9 +85,9 @@ int main(){
   double phi_minus = 0;
   double phi_plus = 0;
   double w0 = (q*B0)/(m);
-  double wz2 = (2*q*V0)/(m*pow(d,2));
-  double w_plus = (w0 + (sqrt(pow(w0,2)*2*wz2)))/(2);
-  double w_minus = (w0 - (sqrt(pow(w0,2)*2*wz2)))/(2);
+  double wz2 = (2.*q*V0)/(m*pow(d,2));
+  double w_plus = (w0 + (sqrt(pow(w0,2)-2.*wz2)))/(2.);
+  double w_minus = (w0 - (sqrt(pow(w0,2)-2.*wz2)))/(2.);
 
   std::vector<double> solution_x_analy;
   std::vector<double> solution_y_analy;
@@ -98,8 +98,10 @@ int main(){
     double A_plus = (v1_analy(1)+(w_minus*r1(0)))/(w_minus-w_plus);
     double A_minus = (-v1_analy(1)-(w_plus*r1(0)))/(w_minus-w_plus);
     
-    double x_analy = (A_plus*cos((-w_plus*t) - phi_plus)) + (A_minus*cos((-w_minus*t)-phi_minus));
-    double y_analy = (A_plus*sin((-w_plus*t) - phi_plus)) + (A_minus*sin((-w_minus*t)-phi_minus));
+    //double x_analy = (A_plus*cos((-w_plus*t) - phi_plus)) + (A_minus*cos((-w_minus*t)-phi_minus));
+    //double y_analy = (A_plus*sin((-w_plus*t) - phi_plus)) + (A_minus*sin((-w_minus*t)-phi_minus));
+    double y_analy = (-A_plus*sin(w_plus*t + phi_plus)) - (A_minus*sin(w_minus*t + phi_minus));
+    double x_analy = (A_plus*cos(w_plus*t + phi_plus)) + (A_minus*cos(w_minus*t + phi_minus));
     double z_analy = (r1_analy(2))*cos(sqrt(wz2)*t);
 
     solution_x_analy.push_back(x_analy);
@@ -111,8 +113,8 @@ int main(){
   std::string filename2 = "Analytical_SingleParticle_TEST.txt";
   std::ofstream ofile2;
   ofile2.open(filename2);
-  //int width = 12;
-  //int prec  = 4;
+  int width = 12;
+  int prec  = 4;
 
   // Loop over steps
   for (int i = 0; i < solution_x_analy.size(); i++)
