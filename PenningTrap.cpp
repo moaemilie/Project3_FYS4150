@@ -19,19 +19,19 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in){
   // External electric field at point r=(x,y,z)
   arma::vec PenningTrap::external_E_field(arma::vec r){ 
     arma::vec E = arma::vec(3);
-    if(d > abs(r(0)) | d > abs(r(1)) | d > abs(r(2))){
+     if(d < abs(r(0)) | d < abs(r(1)) | d < abs(r(2))){
       E(0) = 0;
       E(1) = 0;
       E(2) = 0;
     }
-    else{
+    else{ 
       double E_x = (V0*r(0))/(pow(d,2));  // Her virker det som at den runder av når tallene blir små... 0.00016 blir 0.0002 (ikke bra)
       double E_y = (V0*r(1))/(pow(d,2));
       double E_z = -(2*V0*r(2))/(pow(d,2));
       E(0) = E_x;
       E(1) = E_y;
       E(2) = E_z;
-    }
+      //}
 
     return E;
   };
@@ -39,13 +39,12 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in){
   // External magnetic field at point r=(x,y,z)
   arma::vec PenningTrap::external_B_field(arma::vec r){
     arma::vec B = arma::vec(3);
-    if(d > abs(r(0)) | d > abs(r(1)) | d > abs(r(2))){
+     if(d < abs(r(0)) | d < abs(r(1)) | d < abs(r(2))){
       B(0) = 0;
       B(1) = 0;
       B(2) = 0;
     }
-
-    else{
+    else{ */
       double B_x = 0;
       double B_y = 0;
       double B_z = B0;
@@ -111,7 +110,7 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in){
     // The total force on particle_i from both external fields and other particles
   arma::vec PenningTrap::total_force(int i, bool Coulomb){
     arma::vec F_tot = arma::vec(3).zeros();
-    if(Coulomb == 1){
+    if(Coulomb){
       F_tot = total_force_particles(i)+total_force_external(i); // Force with interaction
     }
     else{
