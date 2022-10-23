@@ -91,7 +91,7 @@ int main(){
   part1_x.push_back(trap1.particles[0].r(0));
   part1_y.push_back(trap1.particles[0].r(1));
   part2_x.push_back(trap1.particles[1].r(0));
-  part2_y.push_back(trap1.particles[0].r(1));
+  part2_y.push_back(trap1.particles[1].r(1));
 
   // Running the Runge kutta function 
   for(int t = 1; t < steps; t++){
@@ -211,7 +211,7 @@ int main(){
 
 
   // Running the Runge kutta function 
-  for(int t = 0; t < steps; t++){
+  for(int t = 1; t < steps; t++){
       trap1.evolve_RK4(dt, false);          //evolve_RK4;
 
       part1_x.push_back(trap1.particles[0].r(0));

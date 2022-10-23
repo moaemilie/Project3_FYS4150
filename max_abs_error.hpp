@@ -1,12 +1,13 @@
 #include <armadillo>
-//#include "Particle.cpp"
-//#include "PenningTrap.cpp"
+#include "Particle.cpp"
+#include "PenningTrap.cpp"
 #include <math.h>
-#include "max_abs_error.hpp"
 
-int main(){
+std::vector<double> max_rel_error(double n_k);
+
+std::vector<double> max_rel_error(double n_k){
   
-/*   // Defining values for the particel
+  // Defining values for the particel
   arma::vec r1 = arma::vec("20. 0. 20.");
   arma::vec v1 = arma::vec("0. 25. 0.");
 
@@ -15,7 +16,7 @@ int main(){
   double V0_in = 2.41*pow(10, 6); 
   double d_in = 500.;
   double w_v = 2.5;
-
+  double f_in = 0.1;
   double m = 40.078;
   double q = 1; 
 
@@ -23,19 +24,15 @@ int main(){
   Particle particle1 = Particle(q, m , r1, v1);
 
   // Creating a penning trap
-  PenningTrap trap1 = PenningTrap(B0_in, V0_in, d_in);
+  PenningTrap trap1 = PenningTrap(B0_in, V0_in, d_in, f_in);
 
   // Adding particles to the penning trap
   trap1.add_particle(particle1);
 
   // Defining values for the different dt-s
-  double n1 = 4000.;
-  double n2 = 8000.;
-  double n3 = 16000.;
-  double n4 = 32000.;
 
   double TotTime = 50;
-  double dt = TotTime/n4;
+  double dt = TotTime/n_k;
 
   // Saving all the x,y,z-values for plotting
   std::vector<double> part1_x_nk;
@@ -64,7 +61,7 @@ int main(){
   std::vector<double> Error_rel_y_nk;
   std::vector<double> Error_rel_z_nk;
 
-    for(int i = 1; i < n4; i++){
+    for(double i = 1; i < n_k; i++){
       trap1.evolve_RK4(dt, true, w_v, i, false);          //evolve_RK4;
       part1_x_nk.push_back(trap1.particles[0].r(0));
       part1_y_nk.push_back(trap1.particles[0].r(1));
@@ -83,57 +80,53 @@ int main(){
       solution_z_analy.push_back(z_analy);
 
       // Calculate the relative error
-      Error_rel_x_nk.push_back((trap1.particles[0].r(0) - x_analy)/(trap1.particles[0].r(0)));
-      Error_rel_y_nk.push_back((trap1.particles[0].r(1) - y_analy)/(trap1.particles[0].r(1)));
-      Error_rel_z_nk.push_back((trap1.particles[0].r(2) - z_analy)/(trap1.particles[0].r(2)));
+      Error_rel_x_nk.push_back(trap1.particles[0].r(0) - x_analy);
+      Error_rel_y_nk.push_back(trap1.particles[0].r(1) - y_analy);
+      Error_rel_z_nk.push_back(trap1.particles[0].r(2) - z_analy);
     }
 
 
-  // Calculating the relative error
+  // Calculating the max relative error in x-direction
+  std::vector<double> max_rel_values;
+  double max_valx = Error_rel_x_nk[0];
 
-  // Write the vectors to files
-  std::string filename = "Rel_error_n4.txt";
-  std::ofstream ofile;
-  ofile.open(filename);
-  int width = 12;
-  int prec  = 4;
+  for(int i = 1; i < Error_rel_x_nk.size(); i++){
 
-  // Loop over steps
-  for (int i = 0; i < Error_rel_x_nk.size(); i++){
-  ofile << std::setw(width) << std::setprecision(prec) << std::scientific << Error_rel_x_nk[i]
-          << std::setw(width) << std::setprecision(prec) << std::scientific << Error_rel_y_nk[i]
-          << std::setw(width) << std::setprecision(prec) << std::scientific << Error_rel_z_nk[i]
-          << std::endl; 
-  }  
-  ofile.close();   */
+    if(max_valx<Error_rel_x_nk[i]){
+      
+      max_valx=Error_rel_x_nk[i];
 
+    }
+  }
+  max_rel_values.push_back(max_valx);
 
-double n1 = 4000.;
-double n2 = 8000.;
-double n3 = 16000.;
-double n4 = 32000.;
+ // Calculating the max relative error in y-direction
+  double max_valy = Error_rel_y_nk[0];
 
-arma::vec h_k = {50./n1, 50./n2, 50./n3, 50./n4};
-arma::vec n_k = {n1, n2, n3, n4};
-//std::vector<double> r_err;
-double err_x;
-double err_y;
-double err_z;
+  for(int i = 1; i < Error_rel_y_nk.size(); i++){
 
-for(int i=1; i<h_k.size(); i++){
+    if(max_valx<Error_rel_y_nk[i]){
+      
+      max_valx=Error_rel_y_nk[i];
 
-  std::vector<double> abs_error = max_rel_error(n_k(i));
-  std::vector<double> abs_error_prev = max_rel_error(n_k(i-1));
+    }
+  }
+  max_rel_values.push_back(max_valy);
+
+ // Calculating the max relative error in z-direction
+  double max_valz = Error_rel_z_nk[0];
+
+  for(int i = 1; i < Error_rel_z_nk.size(); i++){
+
+    if(max_valx<Error_rel_z_nk[i]){
+      
+      max_valx=Error_rel_z_nk[i];
+
+    }
+  }
+  max_rel_values.push_back(max_valz);
   
-  err_x += 1/3*log(abs_error[0]/abs_error_prev[0])/log(h_k(i)/h_k(i-1));
-  err_y += 1/3*log(abs_error[1]/abs_error_prev[1])/log(h_k(i)/h_k(i-1));
-  err_z += 1/3*log(abs_error[2]/abs_error_prev[2])/log(h_k(i)/h_k(i-1));
 
-}
-
-std::cout << err_x;
-std::cout << err_y;
-std::cout << err_z;
   
-  return 1; 
+  return max_rel_values; 
 }
