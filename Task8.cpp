@@ -44,7 +44,7 @@ int main(){
   part1_z.push_back(trap1.particles[0].r(2));
 
    for(int t = 1; t < steps; t++){
-      trap1.evolve_RK4(dt);          //evolve_RK4;
+      trap1.evolve_RK4(dt);          //evolve_RK4, this was done before the time modification of the PenningTrap class
       part1_x.push_back(trap1.particles[0].r(0));
       part1_y.push_back(trap1.particles[0].r(1));
       part1_z.push_back(trap1.particles[0].r(2));
@@ -95,7 +95,7 @@ int main(){
 
   // Running the Runge kutta function 
   for(int t = 1; t < steps; t++){
-      trap1.evolve_RK4(dt, false);          //evolve_RK4;
+      trap1.evolve_RK4(dt, false);          //evolve_RK4, this was done before the time modification of the PenningTrap class
       part1_x.push_back(trap1.particles[0].r(0));
       part1_y.push_back(trap1.particles[0].r(1));
       part2_x.push_back(trap1.particles[1].r(0));
@@ -144,7 +144,7 @@ int main(){
 
   // Running the Runge kutta function 
   for(int t = 1; t < steps; t++){
-      trap1.evolve_RK4(dt, false);          //evolve_RK4;
+      trap1.evolve_RK4(dt, false);          //evolve_RK4, this was done before the time modification of the PenningTrap class
 
       part1_x.push_back(trap1.particles[0].r(0));
       part1_v_x.push_back(trap1.particles[0].v(0));
@@ -212,7 +212,7 @@ int main(){
 
   // Running the Runge kutta function 
   for(int t = 1; t < steps; t++){
-      trap1.evolve_RK4(dt, false);          //evolve_RK4;
+      trap1.evolve_RK4(dt, false);          //evolve_RK4, this was done before the time modification of the PenningTrap class
 
       part1_x.push_back(trap1.particles[0].r(0));
       part1_y.push_back(trap1.particles[0].v(0));

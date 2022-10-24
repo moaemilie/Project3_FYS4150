@@ -65,7 +65,8 @@ int main(){
   std::vector<double> Error_rel_z_nk;
 
     for(int i = 1; i < n4; i++){
-      trap1.evolve_RK4(dt, true, w_v, i, false);          //evolve_RK4;
+      trap1.evolve_RK4(dt, false);          //evolve_RK4, this was done before the time modification of the PenningTrap class
+      //trap1.evolve_forward_Euler(dt, false); //evolve_RK4, this was done before the time modification of the PenningTrap class
       part1_x_nk.push_back(trap1.particles[0].r(0));
       part1_y_nk.push_back(trap1.particles[0].r(1));
       part1_z_nk.push_back(trap1.particles[0].r(2));
