@@ -92,7 +92,7 @@ std::vector<double> max_rel_error(double n_k){
 
   for(int i = 1; i < Error_rel_x_nk.size(); i++){
 
-    if(max_valx<Error_rel_x_nk[i]){
+    if(max_valx < Error_rel_x_nk[i]){
       
       max_valx=Error_rel_x_nk[i];
 
@@ -105,9 +105,9 @@ std::vector<double> max_rel_error(double n_k){
 
   for(int i = 1; i < Error_rel_y_nk.size(); i++){
 
-    if(max_valx<Error_rel_y_nk[i]){
+    if(max_valx < Error_rel_y_nk[i]){
       
-      max_valx=Error_rel_y_nk[i];
+      max_valx = Error_rel_y_nk[i];
 
     }
   }
@@ -118,9 +118,9 @@ std::vector<double> max_rel_error(double n_k){
 
   for(int i = 1; i < Error_rel_z_nk.size(); i++){
 
-    if(max_valx<Error_rel_z_nk[i]){
+    if(max_valx < Error_rel_z_nk[i]){
       
-      max_valx=Error_rel_z_nk[i];
+      max_valx = Error_rel_z_nk[i];
 
     }
   }

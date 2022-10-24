@@ -16,7 +16,7 @@ int main(){
   double B0_in = 9.65*pow(10, 1); // Rett opp
   double V0_in = 2.41*pow(10, 6); // Rett opp
   double d_in = 500.;
-  double f_in = 0.7;
+  double f_in = 0.1;
   double m = 40.078;
   double q = 1; 
   double TotTime = 500.;
@@ -55,7 +55,7 @@ int main(){
   }
 
   
-  std::string filename2 = "Time_dep_V0_0_7_fine2.txt";
+  std::string filename2 = "Time_dep_V0_0_1_fine2.txt";
   std::ofstream ofile2;
   ofile2.open(filename2);
   int width = 12;
