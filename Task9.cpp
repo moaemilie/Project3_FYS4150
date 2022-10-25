@@ -16,7 +16,7 @@ int main(){
   double B0_in = 9.65*pow(10, 1); 
   double V0_in = 2.41*pow(10, 6); 
   double d_in = 500.;
-  double f_in = 0.1;
+  double f_in = 0.1;  //f=0.1 f=0.4 f=0.7
   double m = 40.078;
   double q = 1; 
 
@@ -24,13 +24,13 @@ int main(){
   double TotTime = 500.;
   double dt = 0.1;
   int steps = TotTime / dt;
-  double W_steps = 0.002;  //period  
+  double W_steps = 0.02;  //period  
 
   // Saving all the values for plotting
   std::vector<double> frequency;
   std::vector<double> W;
 
-  for(double j=2; j<2.4; j=j+W_steps){
+  for(double j=0.2; j<2.5; j=j+W_steps){  //j=2; j<2.4;
 
       // Creating penning trap
      PenningTrap trap_v = PenningTrap(B0_in, V0_in, d_in, f_in);
