@@ -9,15 +9,14 @@ int main(){
   // Defining values for the particel
   arma::vec r1 = arma::vec("20. 0. 20.");
   arma::vec v1 = arma::vec("0. 25. 0.");
+  double m = 40.078;
+  double q = 1; 
 
   // Defining values for penning trap
   double B0_in = 9.65*pow(10, 1); 
   double V0_in = 2.41*pow(10, 6); 
   double d_in = 500.;
   double w_v = 2.5;
-
-  double m = 40.078;
-  double q = 1; 
 
   // Creating instsances of a particel
   Particle particle1 = Particle(q, m , r1, v1);
@@ -55,22 +54,24 @@ int main(){
   double w_plus = (w0 + (sqrt(pow(w0,2)-2.*wz2)))/(2.);
   double w_minus = (w0 - (sqrt(pow(w0,2)-2.*wz2)))/(2.);
 
+  // Make a place to save the analytical solutions
   std::vector<double> solution_x_analy;
   std::vector<double> solution_y_analy;
   std::vector<double> solution_z_analy;
 
-  // Define the relative error
+  // Make a place to save the relative error
   std::vector<double> Error_rel_x_nk;
   std::vector<double> Error_rel_y_nk;
   std::vector<double> Error_rel_z_nk;
 
     for(int i = 1; i < n4; i++){
-      //trap1.evolve_RK4(dt, false);          //evolve_RK4, this was done before the time modification of the PenningTrap class
-      trap1.evolve_forward_Euler(dt, false); //evolve_RK4, this was done before the time modification of the PenningTrap class
+      //trap1.evolve_RK4(dt, false);          //evolve with Runge Kutta, this was done before the time modification of the PenningTrap class
+      trap1.evolve_forward_Euler(dt, false); //evolve with Euler, this was done before the time modification of the PenningTrap class
       part1_x_nk.push_back(trap1.particles[0].r(0));
       part1_y_nk.push_back(trap1.particles[0].r(1));
       part1_z_nk.push_back(trap1.particles[0].r(2));
 
+      // Calculate the analytical solution
       double t = dt*i;
       double A_plus = (v1_analy(1)+(w_minus*r1(0)))/(w_minus-w_plus);
       double A_minus = (-v1_analy(1)-(w_plus*r1(0)))/(w_minus-w_plus);
@@ -89,8 +90,6 @@ int main(){
       Error_rel_z_nk.push_back((trap1.particles[0].r(2) - z_analy)/(trap1.particles[0].r(2)));
     }
 
-
-  // Calculating the relative error
 
   // Write the vectors to files
   std::string filename = "Rel_error_n4_COPY_EUL.txt";

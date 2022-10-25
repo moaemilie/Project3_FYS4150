@@ -8,19 +8,18 @@ int main(){
   // Defining values for the particels
   arma::vec r1 = arma::vec("20. 0. 20.");
   arma::vec v1 = arma::vec("0. 25. 0.");
-
-  // Defining values for penning trap
-  double B0_in = 9.65*pow(10, 1); // Rett opp
-  double V0_in = 2.41*pow(10, 6); // Rett opp
-  double d_in = 500.;
-
   double m = 40.078;
-  double q = 1; 
+  double q = 1;
 
-  // Creating instsances of two particles
+  // Defining values for Penning trap
+  double B0_in = 9.65*pow(10, 1); 
+  double V0_in = 2.41*pow(10, 6); 
+  double d_in = 500.; 
+
+  // Creating instsances of a particle
   Particle particle1 = Particle(q, m , r1, v1);
 
-  // Creating penning trap
+  // Creating Penning trap
   PenningTrap trap1 = PenningTrap(B0_in, V0_in, d_in);
 
   // Adding particles to the penning trap
@@ -28,13 +27,17 @@ int main(){
 
 
  
-  // Running the Runge kutta function 
+  // Defining time conditions for the numarical solving
   double TotTime = 50.;
   double dt = 0.1;
   int steps = TotTime / dt;
 
+  //#####################################################################################
+  /*
+  // Running Runge Kutta and saving the x,y,z coordinates for a single particle, and writing to file
+  
   // Saving all the values for plotting
-  /*std::vector<double> part1_x;
+  std::vector<double> part1_x;
   std::vector<double> part1_y;
   std::vector<double> part1_z;
 
@@ -78,9 +81,10 @@ int main(){
   trap1.add_particle(particle2);
 
 //#####################################################################################
+/*
 
-// Getting the x and y values for the two particles with and withount interaction
- /* 
+// Getting the x and y values for the two particles with and withount interaction and writing to file
+  
   // Saving all the values for plotting
   std::vector<double> part1_x;
   std::vector<double> part1_y;
@@ -120,8 +124,9 @@ int main(){
   ofile.close();  */
 
   //#####################################################################################
-  // Getting the x, v_x, y and v_y values for the two particles with and withount interaction
-/* 
+  /* 
+  // Getting the x, v_x, y and v_y values for the two particles with and withount interaction and writing to file
+
   std::vector<double> part1_x;
   std::vector<double> part1_v_x;
   std::vector<double> part1_y;
@@ -190,7 +195,8 @@ int main(){
   ofile2.close(); */  
  
   //#####################################################################################
-  // Getting the x, y, z values for the two particles with and withount interaction
+  /*
+  // Getting the x, y, z values for the two particles with and without interaction and writing to file
  
   std::vector<double> part1_x;
   std::vector<double> part1_y;
@@ -240,7 +246,7 @@ int main(){
           << std::setw(width) << std::setprecision(prec) << std::scientific << part2_z[i]
           << std::endl;
   }  
-  ofile.close(); 
+  ofile.close();  */
 
   return 1; 
 }

@@ -4,28 +4,25 @@
 #include "Particle.hpp"
 
 PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in, double f_in){
-  // Use the input variables (c0, c1) to assign values to the class memeber variables (c0_, c1_)
-  //arma::vec particles = arma::vec(0);
+  // Setting values
   B0 = B0_in;
   V0 = V0_in;
   d = d_in;
   f = f_in;
   
-  //Legge på en bool sånn at man kan skru av og på det time-dependent V0
 }
 
   void PenningTrap::add_particle(Particle p_in){
-    particles.push_back(p_in);
+    particles.push_back(p_in); // Adding particle to the list of particles
   }
 
+  // Making a time dependent V feild
   double PenningTrap::time_dep_V_field(double w_v, double t, bool v_field){
     double V;
     if(v_field){
       V = V0*(1+(f*cos(w_v*t)));
     } 
-
     else{
-
       V = V0;
     }
     return V;
@@ -35,7 +32,9 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in, double f_in){
   arma::vec PenningTrap::external_E_field(arma::vec r, double w_v, double t, bool v_field){ 
     double V_time = time_dep_V_field(w_v, t, v_field);
     arma::vec E = arma::vec(3);
+    // Calculating the particles distance
     double d_n = sqrt(pow(r(0), 2) + pow(r(1), 2) + pow(r(2), 2));
+    // Checking if the particle is out of bounds
     if(d_n > d){ 
       E(0) = 0;
       E(1) = 0;
@@ -56,7 +55,9 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in, double f_in){
   // External magnetic field at point r=(x,y,z)
   arma::vec PenningTrap::external_B_field(arma::vec r){
     arma::vec B = arma::vec(3);
+    // Calculatid the particles distance
     double d_n = sqrt(pow(r(0), 2)+pow(r(1), 2)+pow(r(2), 2));
+    // Checking if the particle is out of bounds
     if(d_n > d){
         B(0) = 0;
         B(1) = 0;
@@ -90,9 +91,6 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in, double f_in){
   
 
     // The total force on particle_i from the external fields
-
-    // Skulle kanskje bruke våre tidligere funkjsoner her? ... (!!!)
-
     arma::vec PenningTrap::total_force_external(int i, double w_v, double t, bool v_field){
       arma::vec E_field = external_E_field(particles[i].r, w_v, t, v_field);
       arma::vec B_field = external_B_field(particles[i].r);
@@ -116,7 +114,6 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in, double f_in){
       arma::vec E_sum = arma::vec(3).zeros();
       for(int j = 0; j < particles.size(); j++){
         if(j!=i){
-          //E_sum += force_particle(i,j);
           E_sum(0) += force_particle(i,j)(0);
           E_sum(1) += force_particle(i,j)(1);
           E_sum(2) += force_particle(i,j)(2);
@@ -138,10 +135,7 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in, double f_in){
     return F_tot;
   }
 
-    // Evolve the system one time step (dt) using Runge-Kutta 4th order
-
-    // What abou the time dependency... (!!!)
-
+  // Evolve the system one time step (dt) using Runge-Kutta 4th order
   void PenningTrap::evolve_RK4(double dt, bool Coulomb, double w_v, double t, bool v_field){
 
     std::vector<Particle> init_part;
@@ -154,7 +148,7 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in, double f_in){
     std::vector<arma::mat> K4_v;
     std::vector<arma::mat> K4_r;
     
-    // Make a copy of all the particle velocities and positions
+    // Going trough all particles, and finding K1 and new r and v and updating
     for(int i = 0; i < particles.size(); i++){
 
       init_part.push_back(particles[i]);
@@ -166,17 +160,18 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in, double f_in){
       particles[i].v = init_part[i].v + (1./2.)*K1_v[i];
       }
 
+    // Going trough all particles, and finding K2 and new r and v
     for(int i = 0; i < particles.size(); i++){
 
       K2_r.push_back(dt*particles[i].v);
       K2_v.push_back((total_force(i, Coulomb, w_v, t, v_field)/particles[i].m)*dt);
 
-      // Calculate r2 and v2 and updating the particle velocity and position
+      // Calculate r2 and v2 and updating the particle velocity and position adn updating
       particles[i].v = init_part[i].v + (1./2.)*K2_v[i];
       particles[i].r = init_part[i].r + (1./2.)*K2_r[i]; 
 
     } 
-
+    // Going trough all particles, and finding K3 and new r and v
     for(int i = 0; i < particles.size(); i++){
       K3_r.push_back(dt*particles[i].v);
       K3_v.push_back((total_force(i, Coulomb, w_v, t, v_field)/particles[i].m)*dt);
@@ -185,12 +180,12 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in, double f_in){
       particles[i].v = init_part[i].v + K3_v[i];
       particles[i].r = init_part[i].r + K3_r[i];
     }
-
+    // Going trough all particles, and finding K4 and new r and v
     for(int i = 0; i < particles.size(); i++){
       K4_r.push_back(dt*particles[i].v);
       K4_v.push_back((total_force(i, Coulomb, w_v, t, v_field)/particles[i].m)*dt);
       
-      // Uupdating the particle velocity and position
+      // Uupdating the particle final velocity and position with a weighted sum
       particles[i].v = init_part[i].v + (1./6.)*(K1_v[i] + 2*K2_v[i] + 2*K3_v[i] + K4_v[i]);
       particles[i].r = init_part[i].r + (1./6.)*(K1_r[i] + 2*K2_r[i] + 2*K3_r[i] + K4_r[i]);
     }
@@ -200,18 +195,19 @@ PenningTrap::PenningTrap(double B0_in, double V0_in, double d_in, double f_in){
   void PenningTrap::evolve_forward_Euler(double dt, bool Coulomb, double w_v, double t, bool v_field){
 
     for(int i = 0; i < particles.size(); i++){
+      // Claculating the new v and r
       arma::vec v_next = particles[i].v + ((total_force(i, Coulomb, w_v, t, v_field))/(particles[i].m))*dt;
       arma::vec r_next = particles[i].r + (particles[i].v*dt);
-
+      // Updating the particles v and r
       particles[i].v = v_next;
       particles[i].r = r_next;
     } 
   }
   
+  // Counting particles in Penning trap
   double PenningTrap::count_particles(){
 
     double particles_left = 0;
-
     for(int i = 0; i < particles.size(); i++){
       if(sqrt((pow(particles[i].r(0), 2)+pow(particles[i].r(1), 2)+pow(particles[i].r(2), 2)))<d){
 
