@@ -1,12 +1,12 @@
 #include <armadillo>
-//#include "Particle.cpp"
-//#include "PenningTrap.cpp"
+#include "Particle.cpp"
+#include "Copy_Penning_Trap.cpp"
 #include <math.h>
-#include "max_abs_error.hpp"
+//#include "max_abs_error.hpp"
 
 int main(){
   
-/*   // Defining values for the particel
+  // Defining values for the particel
   arma::vec r1 = arma::vec("20. 0. 20.");
   arma::vec v1 = arma::vec("0. 25. 0.");
 
@@ -29,10 +29,10 @@ int main(){
   trap1.add_particle(particle1);
 
   // Defining values for the different dt-s
-  double n1 = 4000.;
-  double n2 = 8000.;
-  double n3 = 16000.;
-  double n4 = 32000.;
+  double n1 = 4000;
+  double n2 = 8000;
+  double n3 = 16000;
+  double n4 = 32000;
 
   double TotTime = 50;
   double dt = TotTime/n4;
@@ -65,8 +65,8 @@ int main(){
   std::vector<double> Error_rel_z_nk;
 
     for(int i = 1; i < n4; i++){
-      trap1.evolve_RK4(dt, false);          //evolve_RK4, this was done before the time modification of the PenningTrap class
-      //trap1.evolve_forward_Euler(dt, false); //evolve_RK4, this was done before the time modification of the PenningTrap class
+      //trap1.evolve_RK4(dt, false);          //evolve_RK4, this was done before the time modification of the PenningTrap class
+      trap1.evolve_forward_Euler(dt, false); //evolve_RK4, this was done before the time modification of the PenningTrap class
       part1_x_nk.push_back(trap1.particles[0].r(0));
       part1_y_nk.push_back(trap1.particles[0].r(1));
       part1_z_nk.push_back(trap1.particles[0].r(2));
@@ -93,7 +93,7 @@ int main(){
   // Calculating the relative error
 
   // Write the vectors to files
-  std::string filename = "Rel_error_n4.txt";
+  std::string filename = "Rel_error_n4_COPY_EUL.txt";
   std::ofstream ofile;
   ofile.open(filename);
   int width = 12;
@@ -106,35 +106,7 @@ int main(){
           << std::setw(width) << std::setprecision(prec) << std::scientific << Error_rel_z_nk[i]
           << std::endl; 
   }  
-  ofile.close();   */
+  ofile.close();   
 
-
-double n1 = 4000.;
-double n2 = 8000.;
-double n3 = 16000.;
-double n4 = 32000.;
-
-arma::vec h_k = {50./n1, 50./n2, 50./n3, 50./n4};
-arma::vec n_k = {n1, n2, n3, n4};
-//std::vector<double> r_err;
-double err_x;
-double err_y;
-double err_z;
-
-for(int i=1; i<h_k.size(); i++){
-
-  std::vector<double> abs_error = max_rel_error(n_k(i));
-  std::vector<double> abs_error_prev = max_rel_error(n_k(i-1));
-  
-  err_x += 1/3*log(abs_error[0]/abs_error_prev[0])/log(h_k(i)/h_k(i-1));
-  err_y += 1/3*log(abs_error[1]/abs_error_prev[1])/log(h_k(i)/h_k(i-1));
-  err_z += 1/3*log(abs_error[2]/abs_error_prev[2])/log(h_k(i)/h_k(i-1));
-
-}
-
-std::cout << err_x;
-std::cout << err_y;
-std::cout << err_z;
-  
-  return 1; 
+return 1;
 }

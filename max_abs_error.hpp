@@ -1,6 +1,6 @@
 #include <armadillo>
 #include "Particle.cpp"
-#include "PenningTrap.cpp"
+#include "Copy_Penning_Trap.cpp"
 #include <math.h>
 
 std::vector<double> max_rel_error(double n_k);
@@ -16,22 +16,21 @@ std::vector<double> max_rel_error(double n_k){
   double V0_in = 2.41*pow(10, 6); 
   double d_in = 500.;
   double w_v = 2.5;
-  double f_in = 0.1;
   double m = 40.078;
-  double q = 1; 
+  double q = 1.; 
 
   // Creating instsances of a particel
   Particle particle1 = Particle(q, m , r1, v1);
 
   // Creating a penning trap
-  PenningTrap trap1 = PenningTrap(B0_in, V0_in, d_in, f_in);
+  PenningTrap trap1 = PenningTrap(B0_in, V0_in, d_in);
 
   // Adding particles to the penning trap
   trap1.add_particle(particle1);
 
   // Defining values for the different dt-s
 
-  double TotTime = 50;
+  double TotTime = 50.;
   double dt = TotTime/n_k;
 
   // Saving all the x,y,z-values for plotting
@@ -62,7 +61,7 @@ std::vector<double> max_rel_error(double n_k){
   std::vector<double> Error_rel_z_nk;
 
     for(double i = 1; i < n_k; i++){
-      trap1.evolve_RK4(dt, true, w_v, i, false);          //evolve_RK4;
+      trap1.evolve_forward_Euler(dt, true);          //evolve_RK4;
       part1_x_nk.push_back(trap1.particles[0].r(0));
       part1_y_nk.push_back(trap1.particles[0].r(1));
       part1_z_nk.push_back(trap1.particles[0].r(2));
